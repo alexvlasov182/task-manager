@@ -104,3 +104,40 @@ func (db *DB) GetAll() ([]model.Task, error) {
 	}
 	return tasks, nil
 }
+
+func (db *DB) Update(id int, title, description string, completed bool) (model.Task, error) {
+	query := `
+		UPDATE tasks
+		SET title = $1, description = $2, completed = $3
+		WHERE id = $4
+		RETURNING id, title, description, completed, created_at
+	`
+	var t model.Task
+	err := db.Conn.QueryRow(query, title, description, completed, id).Scan(
+		&t.ID,
+		&t.Title,
+		&t.Description,
+		&t.Completed,
+		&t.CreatedAt,
+	)
+
+	return t, err
+}
+
+func (db *DB) Delete(id int) error {
+	query := `DELETE FROM tasks WHERE id = $1`
+	result, err := db.Conn.Exec(query, id)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
+}
