@@ -25,7 +25,7 @@ func NewDB(dataSourceName string) (*DB, error) {
 
 	// Test connection
 	if err := db.Ping(); err != nil {
-		db.Close()
+		_ = db.Close()
 		return nil, fmt.Errorf("error pinging database: %w", err)
 	}
 
@@ -33,7 +33,8 @@ func NewDB(dataSourceName string) (*DB, error) {
 
 	instance := &DB{Conn: db}
 	if err := instance.createTable(); err != nil {
-		return nil, fmt.Errorf("error crating table: %w", err)
+		_ = db.Close()
+		return nil, fmt.Errorf("error creating table: %w", err)
 	}
 
 	return instance, nil
@@ -84,7 +85,11 @@ func (db *DB) GetAll() ([]model.Task, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() {
+		if err := rows.Close(); err != nil {
+			log.Printf("close rows: %v", err)
+		}
+	}()
 
 	var tasks []model.Task
 	for rows.Next() {

@@ -21,7 +21,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	defer db.Conn.Close()
+	defer func() {
+		if err := db.Conn.Close(); err != nil {
+			log.Printf("close db: %v", err)
+		}
+	}()
 
 	taskHandler := handler.NewTaskHandler(db)
 
@@ -30,7 +34,9 @@ func main() {
 	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		w.Write([]byte(`{"status":"ok","message":"Task Manager API is running"}`))
+		if _, err := w.Write([]byte(`{"status":"ok","message":"Task Manager API is running"}`)); err != nil {
+			log.Printf("write response: %v", err)
+		}
 	})
 
 	mux.HandleFunc("/tasks", func(w http.ResponseWriter, r *http.Request) {

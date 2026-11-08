@@ -12,4 +12,7 @@ build:
 logs:
 	docker compose logs -f
 
+lint:
+	docker run --rm -v $(CURDIR):/app:Z -w /app golangci/golangci-lint:latest golangci-lint run ./...
+
 restart: down up 
