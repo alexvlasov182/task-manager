@@ -12,5 +12,4 @@ build:
 logs:
 	docker compose logs -f
 
-restart:
-	down up
+restart: down up 
