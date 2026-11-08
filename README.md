@@ -18,15 +18,16 @@ A production-ready RESTful API service for task management, built with **Go** an
 
 ```text
  ┌──────────────┐         Docker Network         ┌──────────────────┐
- │               │        (Internal Connection)   │                    │
- │  Task API     │────────────────────────────▶│    PostgreSQL      │
- │  (Container)  │    postgres:5432 / TCP         │    (Container)     │
- │  Non-root     │                                │    Healthcheck     │
+ │              │      (Internal Connection)     │                  │
+ │  Task API    │───────────────────────────────▶│    PostgreSQL    │
+ │  (Container) │    postgres:5432 / TCP         │    (Container)   │
+ │  Non-root    │                                │    Healthcheck   │
  └──────┬───────┘                                └────────┬─────────┘
-        │                                                   │
-        │ Host Port Forwarding                              │ Volume Storage
-        ▼                                                   ▼
+        │                                                 │
+        │ Host Port Forwarding                            │ Volume Storage
+        ▼                                                 ▼
    localhost:8080                                  postgres_data
+```localhost:8080                                  postgres_data
 ```
 
 ---
