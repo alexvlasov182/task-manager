@@ -14,7 +14,7 @@ import (
 func main() {
 	dsn := os.Getenv("DATABASE_URL")
 	if dsn == "" {
-		log.Fatal("DATABASE_URL environment variable is not set")
+		log.Fatal("CRITICAL ERROR: DATABASE_URL environment variable is not set!")
 	}
 
 	db, err := database.NewDB(dsn)
