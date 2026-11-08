@@ -27,7 +27,6 @@ A production-ready RESTful API service for task management, built with **Go** an
         │ Host Port Forwarding                            │ Volume Storage
         ▼                                                 ▼
    localhost:8080                                  postgres_data
-```localhost:8080                                  postgres_data
 ```
 
 ---
