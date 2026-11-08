@@ -13,6 +13,11 @@ services:
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d tasks_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   api:
     build: .
@@ -21,11 +26,12 @@ services:
       - DATABASE_URL=${DATABASE_URL}
     ports:
       - "8080:8080"
-    depends_on:
-      - postgres
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:
